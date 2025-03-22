@@ -42,6 +42,16 @@
         android:inputType="textPassword"
         android:minHeight="48dp"/>
 
+    <EditText
+        android:id="@+id/addressEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/address"
+        android:inputType="textMultiLine"
+        android:gravity="top|start"
+        android:minHeight="100dp"
+        android:maxLines="4"/>
+
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"
