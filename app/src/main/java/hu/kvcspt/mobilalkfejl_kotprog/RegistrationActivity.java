@@ -71,9 +71,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                             startActivity(new Intent(RegistrationActivity.this, MainActivity.class));
                                             finish();
                                         })
-                                        .addOnFailureListener(e -> {
-                                            Toast.makeText(RegistrationActivity.this, "Failed to add user data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        });
+                                        .addOnFailureListener(e -> Toast.makeText(RegistrationActivity.this, "Failed to add user data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             } else {
                                 Toast.makeText(RegistrationActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                             }

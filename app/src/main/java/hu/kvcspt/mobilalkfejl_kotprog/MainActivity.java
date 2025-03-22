@@ -44,25 +44,20 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(view -> {
             String email = emailEditText.getText().toString();
             String password = passwordEditText.getText().toString();
-            Log.d("email", email);
-            Log.d("pwd", password);
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(MainActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(MainActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
             } else {
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(LOG_TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            navigateToMainPage();
-                        } else {
-                            Log.w(LOG_TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        }
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(LOG_TAG, "signInWithEmail:success");
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        navigateToMainPage();
+                    } else {
+                        Log.w(LOG_TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -83,6 +78,5 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null) {
             navigateToMainPage();
         }
-        Log.i(LOG_TAG, "onStart");
     }
 }
