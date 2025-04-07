@@ -10,12 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Log.d(LOG_TAG, "signInWithEmail:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        //FirebaseUser user = mAuth.getCurrentUser();
                         navigateToMainPage();
                     } else {
                         Log.w(LOG_TAG, "signInWithEmail:failure", task.getException());
