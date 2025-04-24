@@ -58,7 +58,12 @@ public class FoodListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
+        generateNavBar();
+    }
+
+    private void generateNavBar() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+        bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -67,6 +72,9 @@ public class FoodListActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.nav_profile) {
                 // startActivity(new Intent(FoodListActivity.this, ProfileActivity.class));
+                return true;
+            } else if (id == R.id.nav_cart) {
+                startActivity(new Intent(FoodListActivity.this, CartActivity.class));
                 return true;
             } else if (id == R.id.nav_logout) {
                 mAuth.signOut();

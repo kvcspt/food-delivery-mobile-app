@@ -19,4 +19,13 @@ public class Cart {
     public List<CartItem> getCartItems() {
         return cartItems;
     }
+
+    public double getTotalPrice() {
+        double total = 0.0;
+        for (CartItem item : cartItems) {
+            total += item.getFoodItem().getPrice() * item.getQuantity();
+        }
+        return total;
+    }
+
 }

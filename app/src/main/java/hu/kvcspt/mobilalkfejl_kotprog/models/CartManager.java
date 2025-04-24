@@ -22,5 +22,9 @@ public class CartManager {
     public void addItem(FoodItem item) {
         cart.addToCart(item);
     }
+
+    public void clearCart(){
+        cart.getCartItems().clear();
+    }
 }
 
