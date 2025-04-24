@@ -10,4 +10,5 @@
     <string name="don_t_have_an_account_register">Don\'t have an account? Register</string>
     <string name="default_web_client_id">22</string>
     <string name="address">Address</string>
+    <string name="add_to_cart">Add to Cart</string>
 </resources>

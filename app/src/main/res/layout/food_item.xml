@@ -31,8 +31,7 @@
             android:paddingStart="12dp"
             app:layout_constraintStart_toEndOf="@id/foodImage"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <TextView
                 android:id="@+id/foodName"
@@ -55,6 +54,22 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/holo_green_dark"
                 android:paddingTop="4dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addToCartButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/add_to_cart"
+                android:textSize="14sp"
+                android:textColor="@android:color/white"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_add_cart"
+                app:iconPadding="8dp"
+                app:iconTint="@android:color/white"
+                app:layout_constraintEnd_toEndOf="@id/textContainer"
+                app:layout_constraintTop_toBottomOf="@id/textContainer" />
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

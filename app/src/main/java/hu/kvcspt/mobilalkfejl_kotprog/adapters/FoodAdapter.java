@@ -3,8 +3,10 @@ package hu.kvcspt.mobilalkfejl_kotprog.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +16,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import hu.kvcspt.mobilalkfejl_kotprog.R;
+import hu.kvcspt.mobilalkfejl_kotprog.models.CartManager;
 import hu.kvcspt.mobilalkfejl_kotprog.models.FoodItem;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder> {
@@ -37,6 +40,11 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
         holder.foodDescription.setText(foodItem.getDescription());
         holder.foodPrice.setText("$" + String.valueOf(foodItem.getPrice()));
 
+        holder.addToCartButton.setOnClickListener(v -> {
+            CartManager.getInstance().addItem(foodItem);
+            Toast.makeText(holder.itemView.getContext(), foodItem.getName() + " added to cart!", Toast.LENGTH_SHORT).show();
+        });
+
         Glide.with(holder.foodImage.getContext()).load(foodItem.getImageUrl()).into(holder.foodImage);
     }
 
@@ -48,6 +56,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
     public static class FoodViewHolder extends RecyclerView.ViewHolder {
         TextView foodName, foodDescription, foodPrice;
         ImageView foodImage;
+        Button addToCartButton;
 
         public FoodViewHolder(View itemView) {
             super(itemView);
@@ -55,6 +64,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
             foodDescription = itemView.findViewById(R.id.foodDescription);
             foodPrice = itemView.findViewById(R.id.foodPrice);
             foodImage = itemView.findViewById(R.id.foodImage);
+            addToCartButton = itemView.findViewById(R.id.addToCartButton);
         }
     }
 }
