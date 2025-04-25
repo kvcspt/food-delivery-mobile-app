@@ -3,6 +3,7 @@ package hu.kvcspt.mobilalkfejl_kotprog.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +43,19 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.FoodViewHolder
 
         holder.addToCartButton.setOnClickListener(v -> {
             CartManager.getInstance().addItem(foodItem);
+
+            v.animate()
+                    .scaleX(1.2f)
+                    .scaleY(1.2f)
+                    .setDuration(100)
+                    .withEndAction(() -> v.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(100)
+                            .start()
+                    )
+                    .start();
+
             Toast.makeText(holder.itemView.getContext(), foodItem.getName() + " added to cart!", Toast.LENGTH_SHORT).show();
         });
 
