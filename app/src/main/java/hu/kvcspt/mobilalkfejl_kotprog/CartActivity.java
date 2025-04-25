@@ -1,25 +1,26 @@
 package hu.kvcspt.mobilalkfejl_kotprog;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.pm.PackageManager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import hu.kvcspt.mobilalkfejl_kotprog.adapters.CartAdapter;
@@ -59,6 +60,12 @@ public class CartActivity extends AppCompatActivity {
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         cartRecyclerView.setAdapter(cartAdapter);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+
         placeOrderButton.setOnClickListener(v -> {
             if (cart.getCartItems().isEmpty()) {
                 Toast.makeText(this, "Cart is empty!", Toast.LENGTH_SHORT).show();
@@ -79,6 +86,7 @@ public class CartActivity extends AppCompatActivity {
                         .addOnSuccessListener(doc -> Toast.makeText(this, "Order placed!", Toast.LENGTH_SHORT).show())
                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to place order.", Toast.LENGTH_SHORT).show());
 
+                showOrderNotification();
                 CartManager.getInstance().clearCart();
                 setTotalPrice(totalPriceText);
                 cartAdapter.notifyDataSetChanged();
@@ -131,6 +139,30 @@ public class CartActivity extends AppCompatActivity {
         } else {
             callback.onUserFetched(null);
         }
+    }
+
+    private void showOrderNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = "order_channel_id";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Order Notifications",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("Order Confirmed")
+                .setContentText("Your food will arrive in approx. 30-40 minutes.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        notificationManager.notify(1, builder.build());
+        Log.d(TAG, "Notification should now appear");
     }
 
 }
