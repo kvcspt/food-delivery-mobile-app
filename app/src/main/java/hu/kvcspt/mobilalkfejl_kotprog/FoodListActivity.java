@@ -71,7 +71,7 @@ public class FoodListActivity extends AppCompatActivity {
                 // Already on home, maybe refresh
                 return true;
             } else if (id == R.id.nav_profile) {
-                // startActivity(new Intent(FoodListActivity.this, ProfileActivity.class));
+                startActivity(new Intent(FoodListActivity.this, ProfileActivity.class));
                 return true;
             } else if (id == R.id.nav_cart) {
                 startActivity(new Intent(FoodListActivity.this, CartActivity.class));
