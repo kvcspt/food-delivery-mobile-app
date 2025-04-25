@@ -1,7 +1,9 @@
 package hu.kvcspt.mobilalkfejl_kotprog;
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -75,9 +77,9 @@ public class CartActivity extends AppCompatActivity {
             convertFirebaseUserToUser(firebaseUser, user -> {
                 Order order;
                 if(user != null){
-                    order = new Order(cart, user, cart.getTotalPrice());
+                    order = new Order(cart, user.getEmail(), cart.countTotalPrice());
                 } else {
-                    order = new Order(cart, null, cart.getTotalPrice());
+                    order = new Order(cart, null, cart.countTotalPrice());
                 }
 
                 db
@@ -87,6 +89,8 @@ public class CartActivity extends AppCompatActivity {
                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to place order.", Toast.LENGTH_SHORT).show());
 
                 showOrderNotification();
+                scheduleOrderReminder();
+
                 CartManager.getInstance().clearCart();
                 setTotalPrice(totalPriceText);
                 cartAdapter.notifyDataSetChanged();
@@ -97,7 +101,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void setTotalPrice(TextView totalPriceText) {
-        totalPriceText.setText(String.format("Total: $%.2f", cart.getTotalPrice()));
+        totalPriceText.setText(String.format("Total: $%.2f", cart.countTotalPrice()));
     }
 
     private void generateNavBar() {
@@ -110,7 +114,7 @@ public class CartActivity extends AppCompatActivity {
                 startActivity(new Intent(CartActivity.this, FoodListActivity.class));
                 return true;
             } else if (id == R.id.nav_profile) {
-                // startActivity(new Intent(FoodListActivity.this, ProfileActivity.class));
+                startActivity(new Intent(CartActivity.this, ProfileActivity.class));
                 return true;
             } else if (id == R.id.nav_cart) {
                 return true;
@@ -164,6 +168,17 @@ public class CartActivity extends AppCompatActivity {
         notificationManager.notify(1, builder.build());
         Log.d(TAG, "Notification should now appear");
     }
+
+    private void scheduleOrderReminder() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, OrderReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        long triggerAtMillis = System.currentTimeMillis() + 3 * 60 * 1000; // 30 perc
+
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+    }
+
 
 }
 

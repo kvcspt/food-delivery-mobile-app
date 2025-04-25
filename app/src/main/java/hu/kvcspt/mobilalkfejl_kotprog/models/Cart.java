@@ -20,7 +20,7 @@ public class Cart {
         return cartItems;
     }
 
-    public double getTotalPrice() {
+    public double countTotalPrice() {
         double total = 0.0;
         for (CartItem item : cartItems) {
             total += item.getFoodItem().getPrice() * item.getQuantity();

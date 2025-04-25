@@ -4,6 +4,9 @@ public class CartItem {
     private FoodItem foodItem;
     private int quantity;
 
+    public CartItem() {
+    }
+
     public CartItem(FoodItem foodItem, int quantity) {
         this.foodItem = foodItem;
         this.quantity = quantity;

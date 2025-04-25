@@ -6,14 +6,14 @@ import java.util.Date;
 
 public class Order {
     private Cart cart;
-    private User user;
+    private String user;
     private Date createdAt;
     private double total;
 
     public Order() {
     }
 
-    public Order(Cart cart, User user, double total) {
+    public Order(Cart cart, String user, double total) {
         this.cart = cart;
         this.user = user;
         this.total = total;
@@ -24,7 +24,7 @@ public class Order {
         return cart;
     }
 
-    public User getUser() {
+    public String getUser() {
         return user;
     }
 
