@@ -2,6 +2,7 @@ package hu.kvcspt.mobilalkfejl_kotprog;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -67,9 +69,10 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentEmail = firebaseUser.getEmail();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         db.collection("Orders")
                 .whereEqualTo("user", currentEmail)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
@@ -78,6 +81,52 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     orderAdapter.notifyDataSetChanged();
                 });
+
+        Button deleteProfileButton = findViewById(R.id.deleteProfileButton);
+
+        deleteProfileButton.setOnClickListener(v -> {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                String email = user.getEmail();
+
+                db.collection("Users")
+                        .whereEqualTo("email", email)
+                                .get()
+                                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                                doc.getReference().delete();
+                                            }
+                                        });
+
+                db.collection("Orders")
+                        .whereEqualTo("user", email)
+                        .get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                doc.getReference().delete();
+                            }
+
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(ProfileActivity.this, "Failed to delete orders: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                        );
+
+                user.delete()
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(ProfileActivity.this, "Profile deleted successfully", Toast.LENGTH_SHORT).show();
+
+                            FirebaseAuth.getInstance().signOut();
+
+                            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(ProfileActivity.this, "Failed to delete profile: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                        );
+            }
+        });
 
     }
 

@@ -68,7 +68,6 @@ public class FoodListActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                // Already on home, maybe refresh
                 return true;
             } else if (id == R.id.nav_profile) {
                 startActivity(new Intent(FoodListActivity.this, ProfileActivity.class));
